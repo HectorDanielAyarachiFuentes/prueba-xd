@@ -10,30 +10,39 @@ export function Form() {
   const [propiedadData, setPropiedadData] = useState([]);
 
   useEffect(() => {
-    // Check local storage for existing data
-    const storedUbicacionData = localStorage.getItem("ubicacionData");
-    const storedPropiedadData = localStorage.getItem("propiedadData");
+    const fetchData = async () => {
+      try {
+        // Check local storage for existing data
+        const storedUbicacionData = localStorage.getItem("datosvivienda_ubicacion");
+        const storedPropiedadData = localStorage.getItem("datosvivienda_propiedad");
 
-    if (storedUbicacionData && storedPropiedadData) {
-      setUbicacionData(JSON.parse(storedUbicacionData));
-      setPropiedadData(JSON.parse(storedPropiedadData));
-    } else {
-      // If no data is in local storage, fetch it from "datos.json"
-      fetch("datos.json")
-        .then((response) => response.json())
-        .then((data) => {
+        if (storedUbicacionData && storedPropiedadData) {
+          setUbicacionData(JSON.parse(storedUbicacionData));
+          setPropiedadData(JSON.parse(storedPropiedadData));
+        } else {
+          // If no data is in local storage, fetch it from "datos.json"
+          const response = await fetch("/src/Components/datos.json");
+          if (!response.ok) {
+            throw new Error("Error al cargar los datos");
+          }
+
+          const data = await response.json();
           const ubicacion = data.filter((item) => item.categoria === "ubicacion");
           const propiedad = data.filter((item) => item.categoria === "propiedad");
 
           setUbicacionData(ubicacion);
           setPropiedadData(propiedad);
 
-          // Store data in local storage
-          localStorage.setItem("ubicacionData", JSON.stringify(ubicacion));
-          localStorage.setItem("propiedadData", JSON.stringify(propiedad));
-        })
-        .catch((error) => console.error("Error al cargar los datos", error));
-    }
+          // Store data in local storage with the new name
+          localStorage.setItem("datosvivienda_ubicacion", JSON.stringify(ubicacion));
+          localStorage.setItem("datosvivienda_propiedad", JSON.stringify(propiedad));
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -47,5 +56,3 @@ export function Form() {
     </div>
   );
 }
-
-export default Form;
