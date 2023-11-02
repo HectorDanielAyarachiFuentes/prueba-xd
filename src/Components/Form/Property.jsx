@@ -1,9 +1,12 @@
 import React from "react";
-export function Properties({ datos }) {
+export function Property( { datos, setPropiedad} ) {
+  const handleChange = (e) => {
+    setPropiedad(e.target.value)};
+
   return (
     <div>
       <label htmlFor="propiedad">Selecciona el tipo de propiedad</label>
-      <select id="propiedad">
+      <select id="propiedad" onChange={handleChange}>
         <option selected disabled>
           ...
         </option>
@@ -17,4 +20,4 @@ export function Properties({ datos }) {
   );
 }
 
-export default Properties;
+export default Property;

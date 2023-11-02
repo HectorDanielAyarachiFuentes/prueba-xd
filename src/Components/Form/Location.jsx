@@ -1,9 +1,11 @@
 import React from "react";
-export function Location({ datos }) {
+export function Location({ datos, setUbicacion }) {
+  const handleChange = (e) => {
+    setUbicacion(e.target.value)};
   return (
     <div>
       <label htmlFor="ubicacion">Selecciona su ubicación</label>
-      <select id="ubicacion">
+      <select id="ubicacion" onChange={handleChange}>
         <option selected disabled>
           ...
         </option>
